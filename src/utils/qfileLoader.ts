@@ -13,9 +13,34 @@ export type SegmentProgress = (loaded: number, total: number) => void;
  * Segment loader for qfile show rooms. Like hls.js's FetchLoader, but it
  * (1) fetches without a Referer, because the qfile CDN answers "invalid url"
  * to a foreign one, and (2) reports bytes as they arrive, which hls.js gives no
- * event for, so the player can show buffering progress and speed.
+ * event for, so the player can show buffering progress and speed, and
+ * (3) asks the server for the segment's CDN link (?link=1) and fetches that
+ * directly: iOS WebKit (Safari engine, QQ's iOS browser) fails a fetch that
+ * follows the server's cross-site 302 to the CDN ("Load failed"), while a
+ * direct no-referrer CDN fetch works (verified with /probe, 2026-11-13).
  * hls.js classes are passed in so it stays out of the main bundle.
  */
+/**
+ * The CDN link for a segment, from the server's ?link=1 JSON answer. A server
+ * without that answer (older release) is used through its redirect instead.
+ */
+async function resolveSegmentUrl(segmentUrl: string, signal: AbortSignal): Promise<string> {
+  try {
+    const sep = segmentUrl.includes("?") ? "&" : "?";
+    const res = await fetch(segmentUrl + sep + "link=1", { cache: "no-store", signal });
+    if (res.ok && (res.headers.get("content-type") ?? "").includes("json")) {
+      const body = await res.json();
+      if (typeof body?.url === "string" && body.url.startsWith("https://")) return body.url;
+    }
+    if (res.status === 404) {
+      throw Object.assign(new Error("segment not found"), { code: 404 });
+    }
+  } catch (error: any) {
+    if (signal.aborted || error?.code === 404) throw error;
+  }
+  return segmentUrl;
+}
+
 export function makeQfileSegmentLoader(
   LoadStats: new () => LoaderStats,
   onProgress: SegmentProgress,
@@ -48,11 +73,9 @@ export function makeQfileSegmentLoader(
       if (context.rangeEnd) {
         headers.set("Range", `bytes=${context.rangeStart}-${context.rangeEnd - 1}`);
       }
-      fetch(context.url, {
-        headers,
-        referrerPolicy: "no-referrer",
-        signal: this.controller.signal,
-      })
+      const signal = this.controller.signal;
+      resolveSegmentUrl(context.url, signal)
+        .then((url) => fetch(url, { headers, referrerPolicy: "no-referrer", signal }))
         .then(async (response) => {
           this.response = response;
           if (!response.ok || !response.body) {
