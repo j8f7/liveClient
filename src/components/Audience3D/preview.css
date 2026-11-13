@@ -1,0 +1,385 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #100e17;
+  color: #eee8f7;
+  font:
+    14px "DM Sans",
+    sans-serif;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+main {
+  max-width: 1360px;
+  margin: auto;
+  padding: 0 45px 40px;
+}
+header {
+  height: 85px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ffffff0a;
+}
+.brand {
+  color: #ece6f5;
+  font-size: 25px;
+  text-decoration: none;
+  letter-spacing: -1px;
+}
+.brand:first-letter {
+  color: #c6adff;
+}
+.brand span {
+  font-size: 21px;
+  font-weight: 700;
+}
+nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #b5a9c5;
+  font-size: 12px;
+}
+.live-pill {
+  font-size: 8px;
+  color: #baa0ea;
+  border: 1px solid #ad8ade26;
+  padding: 5px 7px;
+  border-radius: 5px;
+  letter-spacing: 0.08em;
+}
+button {
+  border: 1px solid #ffffff17;
+  border-radius: 8px;
+  padding: 9px 13px;
+  background: #26202f;
+  color: #ded3e9;
+  font-size: 11px;
+}
+.room-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 35px 0 24px;
+}
+.eyebrow {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #a18bad;
+}
+h1 {
+  font-family: Manrope, sans-serif;
+  font-size: 23px;
+  letter-spacing: -0.7px;
+  font-weight: 600;
+  margin: 8px 0 0;
+}
+.status {
+  font-size: 10px;
+  color: #9bb7a7;
+}
+.room-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 22px;
+}
+.video-frame {
+  overflow: hidden;
+  border: 1px solid #ffffff14;
+  border-radius: 16px;
+}
+.sky {
+  height: 390px;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(
+    ellipse at 58% 42%,
+    #b9979b 0,
+    #736d89 30%,
+    #31374e 65%,
+    #262b3f 100%
+  );
+}
+.moon {
+  position: absolute;
+  top: 70px;
+  left: 58%;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f1d8bd;
+  box-shadow: 0 0 50px 15px #f8dbbe20;
+}
+.mountain {
+  position: absolute;
+  width: 130%;
+  height: 80%;
+  bottom: -30%;
+  clip-path: polygon(
+    0 30%,
+    8% 35%,
+    20% 2%,
+    29% 23%,
+    37% 16%,
+    49% 40%,
+    58% 14%,
+    68% 33%,
+    80% 4%,
+    92% 28%,
+    100% 10%,
+    100% 100%,
+    0 100%
+  );
+}
+.one {
+  background: #343b51;
+  left: -10%;
+  bottom: -13%;
+}
+.two {
+  background: #222c40;
+  left: -25%;
+  bottom: -35%;
+  transform: scaleX(-1);
+}
+.three {
+  background: #182033;
+  left: 10%;
+  bottom: -51%;
+}
+.film-title {
+  position: absolute;
+  top: 51%;
+  width: 100%;
+  text-align: center;
+  text-shadow: 0 1px 10px #0002;
+}
+.film-title span {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #efded3;
+}
+.film-title h2 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 33px;
+  letter-spacing: -0.9px;
+  margin: 11px 0;
+  color: #f1e3d6;
+}
+.video-control {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  font-size: 10px;
+  color: #bdb3c9;
+  background: #191520;
+}
+.timeline {
+  flex: 1;
+  height: 3px;
+  background: #463b50;
+  border-radius: 5px;
+}
+.timeline i {
+  display: block;
+  height: 100%;
+  width: 27%;
+  background: #c0a0ee;
+}
+.video-control em {
+  font-style: normal;
+  color: #655a72;
+}
+.study-note {
+  font-size: 9px;
+  color: #6d6279;
+  margin: 13px 1px;
+}
+aside {
+  display: flex;
+  flex-direction: column;
+  background: #18131f;
+  border: 1px solid #ffffff0b;
+  border-radius: 15px;
+  overflow: hidden;
+}
+.chat-heading {
+  padding: 20px;
+  border-bottom: 1px solid #ffffff09;
+  font-size: 13px;
+  font-weight: 600;
+}
+.chat-heading span {
+  float: right;
+  font-size: 9px;
+  font-weight: 400;
+  color: #8d7f9a;
+}
+.messages {
+  flex: 1;
+  padding: 20px;
+}
+.message {
+  margin: 0 0 24px;
+}
+.message b {
+  font-size: 11px;
+}
+.message small {
+  float: right;
+  font-size: 8px;
+  color: #62576f;
+}
+.message p {
+  color: #aa9cb8;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+.luna {
+  color: #d4ace2;
+}
+.oliver {
+  color: #95bda9;
+}
+.mia {
+  color: #d9bc97;
+}
+.you {
+  color: #c4aff4;
+}
+form {
+  display: flex;
+  margin: 12px;
+  padding: 4px;
+  border: 1px solid #ffffff13;
+  background: #211a2b;
+  border-radius: 10px;
+}
+input {
+  background: none;
+  border: 0;
+  outline: none;
+  padding: 10px 6px;
+  width: 100%;
+  min-width: 0;
+  color: #eee;
+  font-size: 10px;
+}
+form button {
+  border: 0;
+  background: #b495da;
+  color: #241a30;
+  border-radius: 6px;
+  font-size: 17px;
+  padding: 3px 11px;
+}
+.chat-note {
+  font-size: 8px;
+  text-align: center;
+  color: #6d5d7a;
+  margin: 0 0 15px;
+}
+details {
+  margin-top: 30px;
+  color: #877892;
+  font-size: 10px;
+}
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+details p {
+  font-size: 11px;
+}
+.checks button {
+  font-size: 10px;
+}
+@media (max-width: 900px) {
+  main {
+    padding: 0 20px 30px;
+  }
+  .room-grid {
+    grid-template-columns: minmax(0, 1fr) 235px;
+    gap: 14px;
+  }
+  .sky {
+    height: 300px;
+  }
+  .film-title h2 {
+    font-size: 26px;
+  }
+}
+@media (max-width: 650px) {
+  main {
+    padding: 0 13px 25px;
+  }
+  header {
+    height: 66px;
+  }
+  nav {
+    display: none;
+  }
+  .brand span {
+    font-size: 18px;
+  }
+  .room-title {
+    margin: 27px 0 19px;
+  }
+  h1 {
+    font-size: 18px;
+  }
+  .status {
+    display: none;
+  }
+  .room-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .sky {
+    height: 245px;
+  }
+  .film-title h2 {
+    font-size: 26px;
+  }
+  .moon {
+    top: 30px;
+    width: 25px;
+    height: 25px;
+  }
+  .video-control {
+    padding: 13px;
+    gap: 12px;
+    font-size: 8px;
+  }
+  aside {
+    min-height: 330px;
+  }
+  .messages {
+    display: flex;
+    gap: 17px;
+    flex-wrap: wrap;
+  }
+  .message {
+    flex-basis: 100%;
+    margin-bottom: 0;
+  }
+  .study-note {
+    font-size: 8px;
+  }
+}

@@ -1,0 +1,361 @@
+.audience {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 0;
+  overflow: hidden;
+  border: 1px solid #ffffff0d;
+  border-radius: 17px;
+  background:
+    radial-gradient(ellipse at 50% 10%, #34294680, transparent 70%),
+    linear-gradient(180deg, #1b1726, #15121e);
+  color: #ece6f6;
+  isolation: isolate;
+}
+.topline {
+  position: absolute;
+  top: 17px;
+  left: 20px;
+  right: 20px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  pointer-events: none;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.online {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #b9a2f6;
+  box-shadow: 0 0 12px #b9a2f655;
+}
+.count {
+  color: #b9a7ce;
+  border: 1px solid #ffffff12;
+  border-radius: 20px;
+  padding: 1px 6px;
+  font-size: 10px;
+}
+.hint {
+  font-size: 10px;
+  color: #94899e;
+}
+.stage {
+  height: clamp(199px, 19.3vw, 265px);
+  overflow: hidden;
+  position: relative;
+  touch-action: pan-y;
+  cursor: pointer;
+  outline: none;
+}
+.stage:focus-visible {
+  box-shadow: inset 0 0 0 2px #c5adff;
+  border-radius: 17px;
+}
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+.canvas canvas,
+.canvas svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.screenGlow {
+  position: absolute;
+  top: 0;
+  left: 21%;
+  right: 21%;
+  height: 110px;
+  background: radial-gradient(ellipse at 50% 0, #d6c2ff17, transparent 70%);
+  pointer-events: none;
+}
+.screenDirection {
+  position: absolute;
+  top: 49px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 9px;
+  color: #b4a1ca60;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+.overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+.name {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 8px;
+  line-height: 1.35;
+  color: #f1ebf880;
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* A solid chip stays crisp on both the pale rug and the dark floor; the old
+     dark glow smeared light text into a blur over the rug. */
+  padding: 1px 7px;
+  border-radius: 9px;
+  background: #1b1726d9;
+}
+.localName {
+  color: #1b172680;
+  background: #d9c8ffeb;
+  font-weight: 600;
+}
+/* Small idle label above a slime turned toward the video, when it has no bubble. */
+.status {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  font-size: 9px;
+  line-height: 1.3;
+  padding: 0 5px;
+  border-radius: 6px;
+  white-space: nowrap;
+  color: #d9d0e6;
+  background: #1b172699;
+  animation: appear 0.18s ease-out;
+}
+.bubble {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  z-index: 5;
+  width: max-content;
+  max-width: min(180px, 58vw);
+  padding: 9px 12px;
+  background: #f2eafc;
+  color: #33283f;
+  border-radius: 12px 12px 12px 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  box-shadow: 0 8px 28px #08051044;
+  animation: appear 0.18s ease-out;
+}
+.bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  width: 9px;
+  height: 9px;
+  background: #f2eafc;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid #ffffff06;
+  padding: 10px 20px;
+  color: #6f637c;
+  font-size: 9px;
+  align-items: center;
+}
+.footer .heading {
+  color: #ece6f6;
+  white-space: nowrap;
+}
+.empty {
+  position: absolute;
+  top: 45%;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #b0a0bf;
+}
+.fallback {
+  position: absolute;
+  inset: 70px 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+.fallbackPerson {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
+  max-width: 160px;
+}
+.fallbackPerson > span:first-child {
+  width: 44px;
+  height: 50px;
+  border-radius: 45% 45% 40% 40%;
+  color: #ffffff45;
+  padding-top: 5px;
+  text-align: center;
+  font-size: 22px;
+}
+.fallbackBubble {
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #f2eafc;
+  color: #33283f;
+}
+.fallback small {
+  flex-basis: 100%;
+  text-align: center;
+  color: #9f90ad;
+  font-size: 10px;
+}
+@keyframes appear {
+  from {
+    opacity: 0;
+    translate: 0 5px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@media (max-width: 600px) {
+  .topline {
+    left: 13px;
+    right: 13px;
+    top: 13px;
+  }
+  .heading {
+    font-size: 11px;
+  }
+  .hint {
+    font-size: 9px;
+  }
+  .footer {
+    padding: 9px 13px;
+  }
+  .footer span:last-child {
+    display: none;
+  }
+  .stage {
+    height: 205px;
+  }
+  .name {
+    font-size: 7px;
+    max-width: 96px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bubble {
+    animation: none;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 16px;
+  border-top: 1px solid #ffffff09;
+  flex-wrap: wrap;
+}
+.colorButtons,
+.gestureButtons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.actions button {
+  font: inherit;
+  font-size: 11px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid #ffffff10;
+  border-radius: 9px;
+  color: #c8becf;
+  background: #ffffff06;
+  cursor: pointer;
+}
+.actions button[aria-pressed="true"] {
+  background: #ddb49a24;
+  border-color: #e7b29270;
+  color: #f6d7bf;
+}
+.actions button:hover {
+  background: #ffffff11;
+}
+.actions button:focus-visible {
+  outline: 2px solid #e7b292;
+  outline-offset: 2px;
+}
+.actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.gestureButtons button {
+  font-size: 15px;
+}
+.gestureButtons span {
+  font-size: 10px;
+  margin-left: 3px;
+}
+@media (max-width: 600px) {
+  .actions {
+    padding: 9px 11px;
+    gap: 8px;
+  }
+  .actions button {
+    padding: 7px 9px;
+    font-size: 10px;
+    min-height: 40px;
+  }
+  .gestureButtons button {
+    font-size: 15px;
+    padding: 6px 9px;
+  }
+  .gestureButtons span {
+    display: none;
+  }
+  .footer {
+    min-height: 30px;
+  }
+  .cameraHint {
+    display: none;
+  }
+}
+@media (max-width: 370px) {
+  .actions {
+    justify-content: center;
+  }
+  .actions button {
+    padding: 7px 8px;
+  }
+}
+
+.colorButtons { flex-wrap: wrap; }
+.colorLabel { font-size: 10px; color: #a497b3; margin-right: 5px; }
+.actions .colorSwatch { width: 34px; height: 34px; min-height: 34px; padding: 5px; border-radius: 50%; background: transparent; }
+.actions .colorSwatch span { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--slime-color); color: #31253d; font-weight: 700; font-size: 12px; box-shadow: inset 0 2px 3px #ffffff60; }
+.actions .colorSwatch[aria-pressed="true"] { background: #ffffff0b; border-color: var(--slime-color); box-shadow: 0 0 12px #c7a4ff1a; }
+@media (max-width: 600px) {
+  .colorLabel { display: none; }
+  .actions .colorSwatch { width: 36px; height: 40px; min-height: 40px; border-radius: 12px; padding: 6px; }
+  .colorButtons { gap: 3px; }
+  .gestureButtons { gap: 4px; }
+  .actions { gap: 8px 6px; }
+}
+
+.expressionControl { display: flex; align-items: center; gap: 7px; color: #b4a6c4; font-size: 10px; }
+.expressionControl select { min-height: 36px; max-width: 125px; border: 1px solid #ffffff20; border-radius: 9px; background: #292135; color: #efe7f7; padding: 7px 23px 7px 10px; font: inherit; font-size: 11px; cursor: pointer; }
+.expressionControl select:focus-visible { outline: 2px solid #d6b9ff; outline-offset: 2px; }
+.expressionControl select:disabled { opacity: .4; cursor: default; }
+@media (max-width: 600px) { .expressionControl select { min-height: 40px; } .expressionControl { margin-right: auto; } }

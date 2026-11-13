@@ -1,0 +1,63 @@
+{
+  "name": "liveclient",
+  "version": "1.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --project src/tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
+    "@mantine/core": "^8.3.10",
+    "@mediabunny/ac3": "^1.61.3",
+    "@tabler/icons-react": "^3.35.0",
+    "@types/node": "^25.0.1",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
+    "@types/react-onclickoutside": "^6.7.10",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/react-transition-group": "^4.4.12",
+    "@types/three": "^0.180.0",
+    "@types/webtorrent": "^0.110.1",
+    "@types/youtube": "^0.1.2",
+    "can-autoplay": "^3.0.2",
+    "dashjs": "^5.1.0",
+    "eventemitter3": "^4.0.7",
+    "firebase": "^9.23.0",
+    "hls.js": "^1.7.3",
+    "mediabunny": "^1.61.3",
+    "mediasoup-client": "^3.18.1",
+    "react": "^18.3.1",
+    "react-colorful": "^5.6.1",
+    "react-countup": "^6.5.3",
+    "react-dom": "^18.3.1",
+    "react-linkify": "^1.0.0-alpha",
+    "react-onclickoutside": "^6.13.2",
+    "react-router-dom": "^5.3.4",
+    "react-secure-link": "^3.2.0",
+    "react-transition-group": "^4.4.5",
+    "recharts": "^2.15.4",
+    "socket.io-client": "^4.8.1",
+    "srt-webvtt": "^2.0.0",
+    "three": "^0.180.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7",
+    "webtorrent": "^2.8.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

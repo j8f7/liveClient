@@ -1,0 +1,319 @@
+.controlsContainer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.controls {
+  --control-accent: #eaa580;
+  --control-text: #f4f3ed;
+  color: var(--control-text);
+  background: #10161d;
+  padding: 0 16px 9px;
+  min-width: 0;
+  width: 100%;
+}
+
+.timeline {
+  position: relative;
+  width: 100%;
+  height: 25px;
+  cursor: pointer;
+  touch-action: manipulation;
+  border-radius: 4px;
+}
+
+.timeline[aria-disabled="true"] {
+  cursor: default;
+}
+
+.timelineTrack {
+  position: absolute;
+  top: 11px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 4px;
+  background: #ffffff26;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.buffer,
+.elapsed {
+  position: absolute;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: #ffffff30;
+  pointer-events: none;
+}
+
+.elapsed {
+  background: var(--control-accent);
+  z-index: 1;
+}
+
+.playhead {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  top: 8.5px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: var(--control-accent);
+  pointer-events: none;
+}
+
+.timelineHint {
+  position: absolute;
+  bottom: 25px;
+  transform: translateX(-50%);
+  background: #232a32;
+  color: var(--control-text);
+  border: 1px solid #46505b;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.controlRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--control-text);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background 150ms ease,
+    color 150ms ease;
+}
+
+.action svg,
+.settingButton svg,
+.audioSetting svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+
+.action:hover:not(:disabled),
+.settingButton:hover:not(:disabled) {
+  background: #ffffff0d;
+  color: var(--control-accent);
+}
+
+.action:focus-visible,
+.timeline:focus-visible,
+.settingButton:focus-visible,
+.select:focus-visible {
+  outline: 2px solid var(--control-accent);
+  outline-offset: 2px;
+}
+
+.action:disabled,
+.settingButton:disabled,
+.select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.active {
+  color: var(--control-accent);
+}
+
+.inlineVolume {
+  flex: 0 0 74px;
+  width: 74px;
+  padding: 0 7px;
+  margin-right: 5px;
+}
+
+.time {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.duration {
+  color: #9ca6b1;
+}
+
+.live {
+  margin-left: 6px;
+  border-radius: 4px;
+  background: #9e36362e;
+  color: #ffaaa0;
+  padding: 3px 5px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.sync {
+  width: auto;
+  gap: 5px;
+  padding: 0 8px;
+  color: #b6d6c6;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.sync svg {
+  width: 15px;
+  height: 15px;
+}
+
+.behind {
+  color: var(--control-accent);
+}
+
+.settings {
+  max-width: calc(100vw - 24px);
+  max-height: min(480px, calc(100dvh - 40px));
+  overflow-y: auto;
+  padding: 13px;
+  border: 1px solid #333d47;
+  border-radius: 12px;
+  background: #192129;
+  color: var(--control-text);
+  --control-accent: #eaa580;
+  --control-text: #f4f3ed;
+}
+
+.settingsTitle {
+  margin: 1px 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--control-text);
+}
+
+.settingRow,
+.settingButton {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  width: 100%;
+  font-size: 12px;
+}
+
+.settingRow {
+  justify-content: space-between;
+}
+
+.settingButton {
+  border: 0;
+  padding: 0 7px;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.settingButton.active {
+  color: var(--control-accent);
+}
+
+.settingValue {
+  margin-left: auto;
+  color: #a5b0bb;
+  font-size: 11px;
+}
+
+.select {
+  color: var(--control-text);
+  background: #111820;
+  border: 1px solid #3c4652;
+  border-radius: 6px;
+  padding: 6px;
+  max-width: 100%;
+  min-width: 0;
+  font: inherit;
+}
+
+.audioSetting {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 7px;
+  font-size: 12px;
+}
+
+.audioSetting > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.mobileVolume {
+  display: none;
+}
+
+.settingsVolume {
+  width: 128px;
+  padding: 0 7px;
+}
+
+@media (max-width: 600px) {
+  .controls {
+    padding: 0 10px 6px;
+  }
+
+  .controlRow {
+    gap: 2px;
+  }
+
+  .action {
+    width: 40px;
+    height: 40px;
+  }
+
+  .inlineVolume {
+    display: none;
+  }
+
+  .mobileVolume {
+    display: flex;
+  }
+
+  .time {
+    font-size: 10px;
+    gap: 3px;
+  }
+
+  .sync {
+    padding: 0;
+  }
+
+  .sync span {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action {
+    transition: none;
+  }
+}

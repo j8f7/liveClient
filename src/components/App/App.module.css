@@ -1,0 +1,666 @@
+:global(#leftVideo)::-webkit-media-controls {
+  display: none !important;
+}
+.videoContent {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.flexCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bufferInfo {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #c9ced0;
+  font-variant-numeric: tabular-nums;
+}
+.mobileStack {
+  display: flex;
+  gap: 4px;
+}
+.mobileWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.roomMain {
+  max-width: 1440px;
+  margin: auto;
+  padding: 28px 48px 48px;
+}
+.roomHeading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 24px;
+  min-width: 0;
+}
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #98a5b0;
+  font-size: 12px;
+  text-decoration: none;
+  border-right: 1px solid #303943;
+  padding: 12px 18px 12px 0;
+  white-space: nowrap;
+}
+.roomSymbol {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 43px;
+  height: 43px;
+  border: 1px solid #493b34;
+  background: #272421;
+  color: #d4a68d;
+  border-radius: 13px;
+}
+.roomTitle {
+  min-width: 0;
+  flex: 1;
+}
+.roomTitle h1 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+}
+.roomTitle p {
+  font-size: 11px;
+  color: #929fa9;
+  margin: 0;
+  overflow-wrap: anywhere;
+  max-width: 65ch;
+}
+.statusDot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: #9cd4ba;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+.roomActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex: none;
+}
+.roomLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 26px;
+  align-items: start;
+}
+.theater {
+  min-width: 0;
+}
+.playerFrame {
+  position: relative;
+  border-radius: 14px;
+  background: #071019;
+  overflow: visible;
+  box-shadow: 0 12px 36px #0003;
+  isolation: isolate;
+}
+.playerContainer {
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at 70% 20%,
+    #1e363b,
+    #0e1b25 60%,
+    #09121c
+  );
+}
+.playerContainer > video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* Normal view: a solid bar below the picture, so it never covers the video.
+   Fullscreen and the landscape phone layout overlay it instead (see below). */
+.playerControls {
+  position: relative;
+  width: 100%;
+  z-index: 5;
+  background: #10161d;
+  padding: 6px 12px 6px;
+  border-radius: 0 0 14px 14px;
+}
+.playerContainer:has(+ .playerControls) {
+  border-radius: 14px 14px 0 0;
+}
+.emptyPlayer {
+  text-align: center;
+  padding: 24px;
+  max-width: 500px;
+  color: #b8c7ca;
+}
+.emptyPlayer > svg {
+  color: #eaa580;
+}
+.emptyPlayer h2 {
+  font-size: 24px;
+  letter-spacing: -0.6px;
+  font-weight: 500;
+  color: #f4f3ed;
+  margin: 12px 0;
+}
+.emptyPlayer p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+  color: #9eafb9;
+}
+.videoCaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 23px 0;
+  border-bottom: 1px solid #283039;
+  min-width: 0;
+}
+.videoCaption > div {
+  min-width: 0;
+}
+.videoCaption h2 {
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: -0.6px;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+.videoCaption p {
+  margin: 0;
+  font-size: 12px;
+  color: #8f9ca9;
+}
+.eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.7px;
+  color: #d7ad94;
+}
+.sourceTools {
+  padding: 22px 0;
+  border-bottom: 1px solid #283039;
+}
+.sourceTools[hidden] {
+  display: none;
+}
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.sectionHeading h2 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+.sectionHeading > span {
+  font-size: 11px;
+  color: #8a9ba7;
+}
+.sourceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  align-items: center;
+}
+.sourceRow > * {
+  min-width: 0;
+}
+.shareButton {
+  min-width: 0;
+}
+.sourceRow :global(.mantine-Button-root) {
+  font-size: 12px;
+  height: 36px;
+  background: #202b35;
+  color: #d1dce2;
+  --button-hover: #2b3946;
+}
+.queuePanel {
+  padding: 22px 0;
+  min-width: 0;
+}
+.queuePanel > p {
+  font-size: 12px;
+  color: #83939f;
+  line-height: 1.6;
+}
+.queuePanel > div:not(.sectionHeading) {
+  margin-top: 12px;
+}
+.rightColumn {
+  min-width: 0;
+  border: 1px solid #28343d;
+  background: #121a22;
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 22px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  height: min(800px, calc(100dvh - 200px));
+  min-height: 510px;
+  position: relative;
+}
+.conversationHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.conversationHeading h2 {
+  font-size: 16px;
+  letter-spacing: -0.3px;
+  font-weight: 500;
+  margin: 0;
+}
+.conversationHeading > span {
+  font-size: 11px;
+  color: #bdc9d3;
+  background: #26323d;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.conversationNote {
+  color: #8b9ca8;
+  font-size: 10px;
+  line-height: 1.7;
+  margin: 10px 0 16px;
+}
+.identityRow {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.sidebarActions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.sidebarActions :global(.mantine-Button-root) {
+  height: 34px;
+  font-size: 11px;
+  background: #202b35;
+  color: #cbd5de;
+  --button-hover: #2b3946;
+}
+.sidebarActions :global(.mantine-Button-section) > svg {
+  width: 17px;
+  height: 17px;
+}
+.peoplePanel {
+  display: none;
+  max-height: 50%;
+  overflow: auto;
+  background: #121d27;
+  border-bottom: 1px solid #30404d;
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+.peopleOpen {
+  display: block;
+}
+.roomChat {
+  min-height: 0;
+}
+.fullscreenRoom {
+  max-width: none;
+  padding: 16px;
+}
+.fullscreenRoom .roomHeading {
+  display: none;
+}
+.fullscreenRoom .rightColumn {
+  height: calc(100dvh - 32px);
+}
+.playerFrame:fullscreen {
+  width: 100vw;
+  height: 100dvh;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+.playerFrame:fullscreen .playerContainer {
+  width: min(100vw, 177.778dvh);
+  height: auto;
+  max-height: 100dvh;
+}
+.playerFrame:fullscreen .playerControls {
+  position: absolute;
+  bottom: 0;
+  border-radius: 0;
+  background: linear-gradient(transparent, #061019e6 25%);
+  padding: 12px 12px 6px;
+  max-width: min(100vw, 177.778dvh);
+  left: 50%;
+  transform: translateX(-50%);
+}
+@media (max-width: 1100px) {
+  .roomMain {
+    padding: 24px 28px 40px;
+  }
+  .roomLayout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 20px;
+  }
+  .rightColumn {
+    padding: 18px 12px 12px;
+  }
+  .roomActions {
+    gap: 8px;
+  }
+}
+@media (max-width: 950px) and (min-height: 501px) {
+  .roomLayout {
+    grid-template-columns: 1fr;
+  }
+  .rightColumn {
+    height: 480px;
+    min-height: 420px;
+    padding: 22px;
+  }
+  .roomTitle h1 {
+    font-size: 19px;
+  }
+  .roomMain {
+    padding-bottom: 40px;
+  }
+}
+@media (max-width: 600px) {
+  .mobileStack {
+    flex-wrap: wrap;
+  }
+  .roomMain {
+    padding: 0 20px 96px;
+  }
+  .roomHeading {
+    padding: 17px 0;
+    margin: 0;
+    gap: 9px;
+    min-height: 76px;
+  }
+  .backLink {
+    border: 0;
+    padding: 8px 0;
+  }
+  .backLink span,
+  .roomSymbol {
+    display: none;
+  }
+  .roomTitle h1 {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .roomTitle p {
+    font-size: 9px;
+    max-height: 28px;
+    overflow: hidden;
+  }
+  .roomActions {
+    gap: 2px;
+  }
+  .roomActions > :global(.mantine-Button-root) {
+    font-size: 10px;
+    padding: 6px;
+    height: 34px;
+  }
+  .roomActions :global(.mantine-Button-section) {
+    display: none;
+  }
+  .roomActions :global(.mantine-ActionIcon-root) {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+  .roomLayout {
+    display: block;
+  }
+  .playerFrame {
+    margin: 0 -20px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .playerControls {
+    padding: 4px 8px 3px;
+    border-radius: 0;
+  }
+  .emptyPlayer {
+    padding: 16px;
+  }
+  .emptyPlayer > svg {
+    width: 25px;
+    height: 25px;
+  }
+  .emptyPlayer h2 {
+    font-size: 18px;
+    margin: 7px 0;
+  }
+  .emptyPlayer p {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+  .emptyPlayer :global(.mantine-Button-root) {
+    height: 32px;
+    font-size: 11px;
+  }
+  .videoCaption {
+    padding: 22px 0;
+  }
+  .videoCaption h2 {
+    font-size: 22px;
+  }
+  .videoCaption p {
+    font-size: 11px;
+  }
+  .rightColumn {
+    height: 440px;
+    min-height: 400px;
+    margin-top: 12px;
+    padding: 18px 12px 12px;
+  }
+  .sourceTools {
+    padding: 18px 0;
+  }
+  .queuePanel {
+    padding: 20px 0;
+  }
+  .roomMain :global([data-chat-composer]) {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 40;
+    background: #111c26;
+    border: 1px solid #34404b;
+    border-radius: 11px;
+    padding: 6px;
+    box-shadow: 0 -12px 22px #0c1015d9;
+  }
+  .roomMain :global([data-chat-composer] input) {
+    font-size: 16px;
+  }
+  .roomMain :global([data-chat-reply]) {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 70px;
+    background: #1a2936 !important;
+    z-index: 41;
+    max-width: none;
+  }
+  .roomMain :global([data-chat-emoji]) {
+    position: fixed !important;
+    bottom: 78px !important;
+    left: 10px;
+    z-index: 45;
+  }
+  .roomMain :global([data-chat-emoji] em-emoji-picker) {
+    max-width: calc(100vw - 20px);
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 1000px) {
+  .roomMain {
+    padding: 0 24px 90px;
+  }
+  .roomHeading {
+    position: absolute;
+    top: calc(15svh + 8px);
+    left: 20px;
+    right: 20px;
+    margin: 0;
+    padding: 0;
+    z-index: 10;
+    min-height: 36px;
+    text-shadow: 0 1px 4px #000;
+  }
+  .roomSymbol,
+  .backLink span {
+    display: none;
+  }
+  .backLink {
+    border: 0;
+    padding: 4px;
+  }
+  .roomTitle h1 {
+    font-size: 14px;
+  }
+  .roomTitle p {
+    font-size: 9px;
+  }
+  .roomActions {
+    gap: 8px;
+  }
+  .roomActions > button {
+    background: #0c1821b8;
+  }
+  .roomActions :global(.mantine-Button-root) {
+    font-size: 10px;
+  }
+  .roomLayout {
+    display: block;
+  }
+  .playerFrame {
+    height: 100svh;
+    margin: 0 -24px;
+    border-radius: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .playerContainer {
+    width: min(100vw, 177.778svh);
+    height: auto;
+    flex: none;
+  }
+  .playerControls {
+    position: absolute;
+    bottom: 0;
+    border-radius: 0;
+    background: linear-gradient(transparent, #061019e6 25%);
+    width: min(100vw, 177.778svh);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 14px 3px;
+  }
+  .emptyPlayer {
+    padding-top: 54px;
+  }
+  .emptyPlayer h2 {
+    font-size: 20px;
+  }
+  .rightColumn {
+    height: 400px;
+    min-height: 400px;
+  }
+  .roomMain :global([data-chat-composer]) {
+    position: fixed;
+    width: 38%;
+    min-width: 260px;
+    left: auto;
+    right: 24px;
+    bottom: 70px;
+    background: #10232ac9;
+    border: 1px solid #344b54;
+    border-radius: 24px;
+    padding: 3px 6px;
+    z-index: 25;
+    box-shadow: none;
+  }
+  .roomMain :global([data-chat-composer] input) {
+    font-size: 12px;
+    min-height: 30px;
+    height: 30px;
+  }
+  .roomMain :global([data-chat-composer] button) {
+    min-height: 30px;
+    height: 30px;
+  }
+  .roomMain :global([data-chat-emoji]) {
+    position: fixed !important;
+    bottom: 110px !important;
+    right: 20px;
+    z-index: 45;
+  }
+  .roomMain :global([data-chat-reply]) {
+    position: fixed;
+    right: 24px;
+    bottom: 110px;
+    left: auto;
+    width: 38%;
+    background: #1a2936 !important;
+    z-index: 41;
+  }
+  .fullscreenRoom .roomHeading {
+    display: flex;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .roomMain * {
+    scroll-behavior: auto;
+  }
+}
+
+@media (min-width: 951px) {
+  .chatCollapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .chatCollapsed .rightColumn {
+    display: none;
+  }
+}
+@media (max-width: 950px) {
+  .collapseChat {
+    display: none;
+  }
+}

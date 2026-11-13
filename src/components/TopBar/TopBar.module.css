@@ -1,0 +1,201 @@
+.topbar {
+  min-height: 88px;
+  max-width: 1440px;
+  margin: auto;
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  border-bottom: 1px solid #252d35;
+  position: relative;
+  z-index: 20;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  letter-spacing: -1px;
+  font-weight: 750;
+  color: #f4f3ed;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 34px;
+  border-radius: 10px;
+  transform: rotate(-7deg);
+  color: #20282d;
+  background: #eaa580;
+}
+.brandMark svg {
+  transform: rotate(7deg);
+}
+.brandLight {
+  font-weight: 400;
+}
+.brand i {
+  font-style: normal;
+  color: #eaa580;
+}
+.navigation {
+  display: flex;
+  align-self: stretch;
+  gap: 30px;
+  font-size: 13px;
+}
+.navigation a {
+  display: flex;
+  align-items: center;
+  color: #939da8;
+  text-decoration: none;
+  position: relative;
+}
+.navigation a[aria-current] {
+  color: #f4f3ed;
+}
+.navigation a[aria-current]:after {
+  content: "";
+  height: 2px;
+  position: absolute;
+  bottom: -17px;
+  left: 0;
+  right: 0;
+  background: #eaa580;
+}
+.actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.createAction {
+  position: relative;
+}
+.createError {
+  display: block;
+  font-size: 12px;
+  color: #ffb3b3;
+  max-width: 250px;
+  margin-top: 6px;
+}
+.more {
+  position: relative;
+}
+.more summary {
+  list-style: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: #aeb8c1;
+}
+.more summary::-webkit-details-marker {
+  display: none;
+}
+.more[open] summary,
+.more summary:hover {
+  background: #202932;
+}
+.moreMenu {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  min-width: 210px;
+  padding: 16px;
+  background: #151d25;
+  border: 1px solid #34404a;
+  border-radius: 12px;
+  box-shadow: 0 15px 50px #0008;
+  z-index: 30;
+}
+.moreMenu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #d3d9dd;
+  text-decoration: none;
+  padding: 6px;
+}
+.langSwitch {
+  display: flex;
+  gap: 6px;
+  padding: 2px;
+  border: 1px solid #34404a;
+  border-radius: 8px;
+}
+.langSwitch button {
+  flex: 1;
+  font: inherit;
+  font-size: 13px;
+  color: #d3d9dd;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.langSwitch button[aria-pressed="true"] {
+  background: #2a3642;
+  color: #fff;
+}
+.mobileCreate {
+  display: none;
+}
+@media (max-width: 1000px) {
+  .topbar {
+    padding: 16px 28px;
+    gap: 28px;
+  }
+  .navigation {
+    gap: 20px;
+  }
+  .newRoom {
+    display: none;
+  }
+  .mobileCreate {
+    display: block;
+  }
+}
+@media (max-width: 600px) {
+  .topbar {
+    min-height: 72px;
+    padding: 14px 20px;
+    gap: 12px;
+  }
+  .brand {
+    font-size: 21px;
+  }
+  .brandMark {
+    width: 29px;
+    height: 31px;
+  }
+  .navigation {
+    display: none;
+  }
+  .actions {
+    gap: 4px;
+  }
+  .actions :global(.mantine-Button-root) {
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+  .inRoom {
+    display: none;
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .inRoom {
+    display: none;
+  }
+}

@@ -1,0 +1,115 @@
+.Overlay {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 15%;
+  overflow: hidden;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+  background: linear-gradient(0deg, transparent, #03101863);
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 4%,
+    #000 96%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 4%,
+    #000 96%,
+    transparent
+  );
+}
+
+.Overlay[data-enabled="false"] {
+  visibility: hidden;
+}
+
+.Overlay,
+.Overlay * {
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.Comment {
+  position: absolute;
+  left: 100%;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  margin-top: -12px;
+  max-height: 100%;
+  white-space: nowrap;
+  color: #f2f3e9;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.1px;
+  text-shadow:
+    0 2px 3px #000,
+    0 0 6px #000a;
+  animation: scroll-comment var(--comment-duration) linear both;
+  will-change: transform;
+}
+
+.Bubble {
+  display: inline-flex;
+  align-items: baseline;
+  min-width: 0;
+  max-width: 100%;
+  padding: 2px 9px;
+  border-radius: 12px;
+  background: #0a1c2766;
+}
+
+.Author {
+  flex: 0 1 auto;
+  max-width: 38%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 6px;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.Text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Still {
+  left: 5%;
+  animation: none;
+  will-change: auto;
+}
+
+@keyframes scroll-comment {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-1 * var(--comment-travel)));
+  }
+}
+
+@media (max-width: 600px), (max-height: 500px) {
+  .Comment {
+    font-size: 11px;
+  }
+  .Author {
+    font-size: 9px;
+  }
+}
+
+/* CSS also stops motion immediately if the system preference changes before JS. */
+@media (prefers-reduced-motion: reduce) {
+  .Comment {
+    left: 5%;
+    animation: none;
+    will-change: auto;
+  }
+}

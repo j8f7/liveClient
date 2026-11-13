@@ -1,0 +1,51 @@
+html {
+  color-scheme: dark;
+  scroll-padding-top: 20px;
+}
+html body {
+  margin: 0;
+  background: #0c1015;
+  color: #f4f3ed;
+}
+* {
+  box-sizing: border-box;
+}
+button,
+a,
+input,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #eaa580;
+  outline-offset: 4px;
+}
+a {
+  color: #eaa580;
+}
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-thumb {
+  background: #34404c;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.mantine-Button-root[data-variant="filled"],
+.mantine-ActionIcon-root[data-variant="filled"] {
+  --button-color: #18232b;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
