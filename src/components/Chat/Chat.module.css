@@ -258,6 +258,15 @@
   scrollbar-width: thin;
   padding-right: 4px;
 }
+.joinNotice {
+  margin-top: 8px;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #939da8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .composer {
   display: flex;
   align-items: center;

@@ -32,6 +32,7 @@ import {
 } from "../../utils/utils";
 import { getGuestIdentity } from "../../utils/guestIdentity";
 import { makeQfileSegmentLoader } from "../../utils/qfileLoader";
+import { isJoinNotice } from "../../utils/joinNotice";
 import { syncServerClock } from "../../utils/serverClock";
 import { generateName } from "../../utils/generateName";
 import { Chat } from "../Chat/Chat";
@@ -151,6 +152,8 @@ interface AppState {
   participants: User[];
   rosterUpdateTS: Number;
   chat: ChatMessage[];
+  /** Newest arrival notice, shown as one line under the chat (not history). */
+  joinNotice?: ChatMessage;
   liveChat: ChatMessage[];
   liveChatVersion: number;
   commentsEnabled: boolean;
@@ -835,7 +838,13 @@ export class App extends React.Component<AppProps, AppState> {
         },
       );
     });
+    socket.on("REC:joinNotice", (data: ChatMessage) => this.setState({ joinNotice: data }));
     socket.on("REC:chat", (data: ChatMessage) => {
+      // Older servers still send arrivals as chat: show them on the notice line.
+      if (isJoinNotice(data)) {
+        this.setState({ joinNotice: data });
+        return;
+      }
       if (
         !getCurrentSettings().disableChatSound &&
         !data.system &&
@@ -941,8 +950,10 @@ export class App extends React.Component<AppProps, AppState> {
       });
     });
     socket.on("chatinit", (data: ChatMessage[]) => {
+      const joins = data.filter((msg) => isJoinNotice(msg));
       this.setState((state) => ({
-        chat: data,
+        chat: data.filter((msg) => !isJoinNotice(msg)),
+        joinNotice: joins[joins.length - 1] ?? state.joinNotice,
         liveChat: [],
         liveChatVersion: state.liveChatVersion + 1,
         scrollTimestamp: Date.now(),
@@ -3161,6 +3172,7 @@ export class App extends React.Component<AppProps, AppState> {
               )}
               <Chat
                 chat={this.state.chat}
+                joinNotice={this.state.joinNotice}
                 nameMap={this.state.nameMap}
                 pictureMap={this.state.pictureMap}
                 socket={this.socket}

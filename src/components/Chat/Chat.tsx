@@ -39,6 +39,8 @@ const truncateReply = (input?: string, max = 30) =>
 
 interface ChatProps {
   chat: ChatMessage[];
+  /** Newest arrival notice: one line above the message box, replaced by the next. */
+  joinNotice?: ChatMessage;
   nameMap: StringDict;
   pictureMap: StringDict;
   socket: Socket;
@@ -394,6 +396,17 @@ export class Chat extends React.Component<ChatProps> {
             </Button>
           </div>
         )}
+        {this.props.joinNotice ? (
+          <div
+            className={styles.joinNotice}
+            role="status"
+            aria-live="polite"
+            data-chat-join-notice
+            title={this.props.joinNotice.cmd}
+          >
+            {this.props.joinNotice.cmd}
+          </div>
+        ) : null}
         <div className={styles.composer} data-chat-composer>
           <TextInput
             ref={this.chatInputRef}
