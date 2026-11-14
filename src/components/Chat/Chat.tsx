@@ -6,9 +6,7 @@ import {
   HoverCard,
   TextInput,
 } from "@mantine/core";
-// import data from '@emoji-mart/data';
 import Picker from "@emoji-mart/react";
-import { init } from "emoji-mart";
 // import onClickOutside from 'react-onclickoutside';
 //@ts-expect-error
 import Linkify from "react-linkify";
@@ -36,6 +34,9 @@ import { t, getLang } from "../../i18n";
 const clientId = getOrCreateClientId();
 const truncateReply = (input?: string, max = 30) =>
   input && input.length > max ? `${input.slice(0, max)}...` : input || "";
+
+// Emoji data ships with the app (no CDN fetch) and loads the first time a picker opens.
+const loadEmojiData = () => import("@emoji-mart/data").then((m) => m.default);
 
 interface ChatProps {
   chat: ChatMessage[];
@@ -76,7 +77,6 @@ export class Chat extends React.Component<ChatProps> {
   async componentDidMount() {
     this.scrollToBottom();
     this.messagesRef.current?.addEventListener("scroll", this.onScroll);
-    init({});
   }
 
   componentDidUpdate(prevProps: ChatProps) {
@@ -312,6 +312,7 @@ export class Chat extends React.Component<ChatProps> {
             style={{ position: "absolute", bottom: "60px", zIndex: 50 }}
           >
             <Picker
+              data={loadEmojiData}
               theme="dark"
               previewPosition="none"
               maxFrequentRows={1}
@@ -342,6 +343,7 @@ export class Chat extends React.Component<ChatProps> {
             }}
           >
             <Picker
+              data={loadEmojiData}
               theme="dark"
               previewPosition="none"
               maxFrequentRows={1}

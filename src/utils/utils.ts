@@ -173,8 +173,19 @@ export const debounce = (callback: Function, wait = 500) => {
   };
 };
 
+// A letter avatar drawn locally (no third-party image service sees guest names):
+// the first character of the name after a 访客_/guest_ prefix, on the user's color.
 export const getDefaultPicture = (name: string, background = "a0a0a0") => {
-  return `https://ui-avatars.com/api/?name=${name}&background=${background}&size=256&color=ffffff`;
+  const label = String(name ?? "").replace(/^(访客|guest)_/i, "");
+  const initial = (Array.from(label)[0] ?? "?").toUpperCase();
+  const text = initial.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+  const fill = /^[0-9a-f]{3,8}$/i.test(background) ? `#${background}` : background;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">` +
+    `<rect width="64" height="64" fill="${fill}"/>` +
+    `<text x="32" y="32" dy="0.35em" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="30" fill="#ffffff">${text}</text>` +
+    `</svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 };
 
 export const isMobile = () => {

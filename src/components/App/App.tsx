@@ -33,6 +33,7 @@ import {
 import { getGuestIdentity } from "../../utils/guestIdentity";
 import { makeQfileSegmentLoader } from "../../utils/qfileLoader";
 import { isJoinNotice } from "../../utils/joinNotice";
+import { noteSegmentBytes, watchRebuffers } from "../../utils/rebufferTelemetry";
 import { syncServerClock } from "../../utils/serverClock";
 import { generateName } from "../../utils/generateName";
 import { Chat } from "../Chat/Chat";
@@ -174,6 +175,8 @@ interface AppState {
   isAutoPlayable: boolean;
   // The browser refused to start the video even muted (e.g. iOS Low Power Mode): a tap is needed.
   playBlocked: boolean;
+  /** The YouTube player (iframe + API script) is loaded only once YouTube media plays. */
+  youtubeRequested: boolean;
   downloaded: number;
   total: number;
   speed: number;
@@ -258,6 +261,7 @@ export class App extends React.Component<AppProps, AppState> {
     isVBrowser: false,
     isAutoPlayable: true,
     playBlocked: false,
+    youtubeRequested: false,
     downloaded: 0,
     total: 0,
     speed: 0,
@@ -353,7 +357,14 @@ export class App extends React.Component<AppProps, AppState> {
     const canAutoplay = await testAutoplay();
     this.setState({ isAutoPlayable: canAutoplay });
     this.loadSettings();
-    this.loadYouTube();
+    const video = document.getElementById("leftVideo");
+    if (video instanceof HTMLVideoElement) {
+      watchRebuffers(video, serverPath, () => ({
+        room: this.state.roomId,
+        media: this.state.roomMedia,
+        estimateBitsPerSec: window.watchparty.hls?.bandwidthEstimate,
+      }));
+    }
     this.init();
     if (firebaseEnabled) {
       const firebase = await loadFirebase();
@@ -715,7 +726,10 @@ export class App extends React.Component<AppProps, AppState> {
                       // for the buffering readout.
                       fLoader: makeQfileSegmentLoader(
                         LoadStats,
-                        this.onSegmentProgress,
+                        (loaded: number, total: number) => {
+                          noteSegmentBytes(loaded);
+                          this.onSegmentProgress(loaded, total);
+                        },
                       ) as any,
                       // Segments are ~6 s and each costs a link lookup:
                       // load them one at a time, at most 5 ahead (hls.js
@@ -1876,6 +1890,13 @@ export class App extends React.Component<AppProps, AppState> {
     return isYouTube(this.state.roomMedia);
   };
 
+  componentDidUpdate() {
+    // First YouTube media in this room: render its iframe, then load the API for it.
+    if (!this.state.youtubeRequested && this.usingYoutube()) {
+      this.setState({ youtubeRequested: true }, this.loadYouTube);
+    }
+  }
+
   usingNative = () => {
     // Anything that uses HTML Video (e.g. not YouTube, Vimeo, or other embedded JS player)
     return !this.usingYoutube();
@@ -2649,21 +2670,23 @@ export class App extends React.Component<AppProps, AppState> {
                         )}
                       </div>
                     )}
-                  <iframe
-                    style={{
-                      display:
-                        this.usingYoutube() && !this.state.loading
-                          ? "block"
-                          : "none",
-                    }}
-                    title={t("app.youtubeFrameTitle")}
-                    id="leftYt"
-                    className={styles.videoContent}
-                    allowFullScreen
-                    frameBorder="0"
-                    allow="autoplay; encrypted-media"
-                    src="https://www.youtube.com/embed/?enablejsapi=1&controls=0&rel=0"
-                  />
+                  {this.state.youtubeRequested && (
+                    <iframe
+                      style={{
+                        display:
+                          this.usingYoutube() && !this.state.loading
+                            ? "block"
+                            : "none",
+                      }}
+                      title={t("app.youtubeFrameTitle")}
+                      id="leftYt"
+                      className={styles.videoContent}
+                      allowFullScreen
+                      frameBorder="0"
+                      allow="autoplay; encrypted-media"
+                      src="https://www.youtube.com/embed/?enablejsapi=1&controls=0&rel=0"
+                    />
+                  )}
                   {this.playingVBrowser() &&
                   this.getVBrowserPass() &&
                   this.getVBrowserHost() ? (
