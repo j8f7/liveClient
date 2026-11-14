@@ -267,6 +267,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.joinNoticeTime {
+  margin-left: 8px;
+  color: #64717e;
+}
 .composer {
   display: flex;
   align-items: center;

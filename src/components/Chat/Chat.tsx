@@ -404,9 +404,13 @@ export class Chat extends React.Component<ChatProps> {
             role="status"
             aria-live="polite"
             data-chat-join-notice
-            title={this.props.joinNotice.cmd}
+            title={`${this.props.joinNotice.cmd} ${new Date(this.props.joinNotice.timestamp).toLocaleString()}`}
           >
             {this.props.joinNotice.cmd}
+            {/* Same clock time as chat messages; the server stamps each arrival. */}
+            <span className={styles.joinNoticeTime}>
+              {new Date(this.props.joinNotice.timestamp).toLocaleTimeString()}
+            </span>
           </div>
         ) : null}
         <div className={styles.composer} data-chat-composer>
