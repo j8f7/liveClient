@@ -35,6 +35,12 @@ import { makeQfileSegmentLoader } from "../../utils/qfileLoader";
 import { isJoinNotice } from "../../utils/joinNotice";
 import { noteSegmentBytes, watchRebuffers } from "../../utils/rebufferTelemetry";
 import { syncServerClock } from "../../utils/serverClock";
+import {
+  STARTUP_TIMEOUT_MS,
+  StartupError,
+  reportStartupError,
+  startupFetch,
+} from "../../utils/startupError";
 import { generateName } from "../../utils/generateName";
 import { Chat } from "../Chat/Chat";
 import { ChatOverlay } from "../ChatOverlay/ChatOverlay";
@@ -188,6 +194,8 @@ interface AppState {
     playFn?: () => void;
   }[];
   overlayMsg: string;
+  // Startup error code shown with overlayMsg (utils/startupError.ts); "" for other errors.
+  overlayCode: string;
   isErrorAuth: boolean;
   settings: Settings;
   vBrowserResolution: string;
@@ -268,6 +276,7 @@ export class App extends React.Component<AppProps, AppState> {
     connections: 0,
     fileSelection: [],
     overlayMsg: "",
+    overlayCode: "",
     isErrorAuth: false,
     settings: {},
     vBrowserResolution: "1280x720@30",
@@ -354,6 +363,7 @@ export class App extends React.Component<AppProps, AppState> {
       10 * 60 * 1000,
     );
 
+    this.armStartupWatchdog();
     const canAutoplay = await testAutoplay();
     this.setState({ isAutoPlayable: canAutoplay });
     this.loadSettings();
@@ -380,37 +390,76 @@ export class App extends React.Component<AppProps, AppState> {
     document.removeEventListener("fullscreenchange", this.onFullScreenChange);
     document.removeEventListener("keydown", this.onKeydown);
     window.clearInterval(this.heartbeat);
+    window.clearInterval(this.tsInterval);
+    window.clearTimeout(this.startupTimer);
     this.socket?.disconnect();
   }
 
-  init = async () => {
-    let roomId = "/" + this.props.urlRoomId;
-    // if a vanity name, resolve the url to a room id
-    if (this.props.vanity) {
-      const resp = await fetch(
-        serverPath + "/resolveRoom/" + this.props.vanity,
-      );
-      if (!resp.ok) {
-        this.setState({ overlayMsg: t("app.loadRoomFailed") });
-        return;
+  // Startup ("加载中") must end in either a connected socket or a coded error with a
+  // retry button: every step below can fail or hang (see utils/startupError.ts).
+  startupTimer?: number;
+  tsInterval?: number;
+  armStartupWatchdog = () => {
+    window.clearTimeout(this.startupTimer);
+    this.startupTimer = window.setTimeout(() => {
+      if (this.state.state === "starting" && !this.state.overlayMsg && !this.state.isErrorAuth) {
+        this.failStartup("E5", `no connection after ${STARTUP_TIMEOUT_MS / 1000}s`);
       }
-      const data = await resp.json();
-      if (!data?.roomId) {
-        this.setState({ overlayMsg: t("app.loadRoomFailed") });
-        return;
-      }
-      roomId = data.roomId;
+    }, STARTUP_TIMEOUT_MS);
+  };
+  failStartup = (code: string, detail: string, message = t("app.connectFailed")) => {
+    console.error("startup failed", code, detail);
+    window.clearTimeout(this.startupTimer);
+    const shown = `${code} ${detail}`.slice(0, 120);
+    if (this.state.overlayCode === shown) return; // socket.io repeats connect_error per attempt
+    this.setState({ overlayMsg: message, overlayCode: shown });
+    reportStartupError(serverPath, code, detail);
+  };
+  retryConnect = () => {
+    window.clearInterval(this.tsInterval);
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.disconnect();
     }
-    this.setState({ roomId }, () => {
-      this.join(roomId);
+    this.setState({ overlayMsg: "", overlayCode: "" }, () => {
+      this.armStartupWatchdog();
+      this.init();
     });
+  };
+
+  init = async () => {
+    try {
+      let roomId = "/" + this.props.urlRoomId;
+      // if a vanity name, resolve the url to a room id
+      if (this.props.vanity) {
+        const resp = await startupFetch("E1", serverPath + "/resolveRoom/" + this.props.vanity);
+        const data = await resp.json().catch(() => null);
+        if (!data?.roomId) {
+          this.failStartup("E1", "room not found", t("app.loadRoomFailed"));
+          return;
+        }
+        roomId = data.roomId;
+      }
+      this.setState({ roomId });
+      await this.join(roomId);
+    } catch (e: any) {
+      if (e instanceof StartupError) this.failStartup(e.code, e.message);
+      else this.failStartup("E0", `${e?.name ?? "Error"}: ${e?.message ?? e}`);
+    }
   };
 
   join = async (roomId: string) => {
     const password = getSavedPasswords()[roomId] ?? "";
-    const response = await fetch(serverPath + "/resolveShard" + roomId);
+    const response = await startupFetch("E2", serverPath + "/resolveShard" + roomId);
     const shard = Number(await response.text()) || "";
-    const guestIdentity = this.context.user ? undefined : await getGuestIdentity();
+    let guestIdentity: Awaited<ReturnType<typeof getGuestIdentity>> | undefined;
+    if (!this.context.user) {
+      try {
+        guestIdentity = await getGuestIdentity();
+      } catch (e: any) {
+        throw new StartupError("E3", `${e?.name ?? "Error"}: ${e?.message ?? e}`);
+      }
+    }
     const joinName = guestIdentity?.name || this.state.myName || this.context.user?.displayName?.split(" ")[0] || "Guest";
     const socket = io(serverOrigin + roomId, {
       path: serverSocketPath,
@@ -428,10 +477,12 @@ export class App extends React.Component<AppProps, AppState> {
     });
     this.socket = socket;
     socket.on("connect", async () => {
+      window.clearTimeout(this.startupTimer);
       void syncServerClock(serverPath);
       this.setState({
         state: "connected",
         overlayMsg: "",
+        overlayCode: "",
         errorMessage: "",
         successMessage: "",
         warningMessage: "",
@@ -451,11 +502,15 @@ export class App extends React.Component<AppProps, AppState> {
     socket.on("connect_error", (err: any) => {
       console.error(err);
       if (err.message === "Invalid namespace") {
-        this.setState({ overlayMsg: t("app.loadRoomFailed") });
+        this.failStartup("E4", "Invalid namespace", t("app.loadRoomFailed"));
       } else if (err.message === "password") {
+        window.clearTimeout(this.startupTimer);
         this.setState({ isErrorAuth: true });
+      } else if (this.state.state === "starting") {
+        // socket.io keeps retrying; a later success clears the modal in "connect".
+        this.failStartup("E4", String(err?.message ?? "connect_error"));
       } else {
-        this.setState({ overlayMsg: err?.message ?? t("app.genericError") });
+        this.setState({ warningMessage: t("app.reconnecting") });
       }
     });
     socket.on("disconnect", (reason) => {
@@ -1030,7 +1085,8 @@ export class App extends React.Component<AppProps, AppState> {
       },
     );
     socket.on("REC:getRoomState", this.handleRoomState);
-    window.setInterval(() => {
+    window.clearInterval(this.tsInterval);
+    this.tsInterval = window.setInterval(() => {
       if (this.state.roomMedia) {
         const toSend = this.getRoomTSToSet(this.Player().getCurrentTime());
         this.socket.emit("CMD:ts", toSend);
@@ -2447,7 +2503,13 @@ export class App extends React.Component<AppProps, AppState> {
             <Title order={2}>{t("app.loading")}</Title>
           </Overlay>
         )}
-        {this.state.overlayMsg && <ErrorModal error={this.state.overlayMsg} />}
+        {this.state.overlayMsg && (
+          <ErrorModal
+            error={this.state.overlayMsg}
+            code={this.state.overlayCode || undefined}
+            onRetry={this.state.overlayCode ? this.retryConnect : undefined}
+          />
+        )}
         {this.state.isErrorAuth && <PasswordModal roomId={this.state.roomId} />}
         <SettingsModal
           modalOpen={this.state.settingsModalOpen}
