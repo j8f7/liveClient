@@ -123,6 +123,9 @@ const SHOW_VIDEO_CAPTION = false;
 // 观看选项 button in the room heading (top right; opens the video source tools for
 // rooms with roomControls). Hidden; set true to restore.
 const SHOW_WATCH_OPTIONS = false;
+// 接下来播放 queue panel under the slime floor (upcoming videos, for rooms with
+// roomControls). Hidden; set true to restore.
+const SHOW_QUEUE_PANEL = false;
 
 declare global {
   interface Window {
@@ -3155,7 +3158,7 @@ export class App extends React.Component<AppProps, AppState> {
                   </div>
                 </React.Fragment>
               </section>}
-              {roomControls && <section className={styles.queuePanel} aria-label={t("app.watchQueue")}>
+              {SHOW_QUEUE_PANEL && roomControls && <section className={styles.queuePanel} aria-label={t("app.watchQueue")}>
                 <div className={styles.sectionHeading}>
                   <h2>{t("app.comingUp")}</h2>
                   <span>{t("app.queuedCount", { count: playlist.length })}</span>
