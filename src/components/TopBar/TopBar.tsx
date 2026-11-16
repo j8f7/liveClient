@@ -9,7 +9,7 @@ import Announce from "../Announce/Announce";
 import { InviteButton } from "../InviteButton/InviteButton";
 import appStyles from "../App/App.module.css";
 import { MetadataContext } from "../../MetadataContext";
-import config, { lobbyHref } from "../../config";
+import config, { appHref, lobbyHref } from "../../config";
 import {
   IconBrandDiscord,
   IconBrandFacebookFilled,
@@ -57,9 +57,9 @@ export async function createRoom(
     throw new Error(t("room.invalidServer"));
   }
   if (openNewTab) {
-    window.open("/watch" + name);
+    window.open(appHref("/watch" + name));
   } else {
-    window.location.assign("/watch" + name);
+    window.location.assign(appHref("/watch" + name));
   }
 }
 
@@ -281,7 +281,7 @@ export const TopBar = (props: {
       </a>
       <nav className={styles.navigation} aria-label={t("nav.main")}>
         <a
-          href="/#rooms"
+          href={config.VITE_HASH_ROUTER ? lobbyHref : "/#rooms"}
           aria-current={
             !props.inRoom && window.location.pathname === "/"
               ? "page"
@@ -290,7 +290,7 @@ export const TopBar = (props: {
         >
           {t("nav.rooms")}
         </a>
-        <a href="/faq">{t("nav.howItWorks")}</a>
+        <a href={appHref("/faq")}>{t("nav.howItWorks")}</a>
       </nav>
       <div className={styles.actions}>
         {!props.hideNewRoom && (
@@ -310,7 +310,7 @@ export const TopBar = (props: {
             )}
             {context.features.roomCreation && !props.hideMyRooms && context.user && <ListRoomsButton />}
             {context.features.roomControls && <SubscribeButton />}
-            <a href="/faq">{t("nav.howItWorks")}</a>
+            <a href={appHref("/faq")}>{t("nav.howItWorks")}</a>
             <div className={styles.langSwitch} role="group" aria-label={t("lang.label")}>
               {LANG_OPTIONS.map((option) => (
                 <button

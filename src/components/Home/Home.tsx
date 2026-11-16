@@ -40,7 +40,7 @@ import {
   type SavedRoom,
 } from "./roomDirectory";
 import { t, getLang, type MessageKey } from "../../i18n";
-import config from "../../config";
+import config, { appHref } from "../../config";
 
 type RoomFilter = "all" | "saved" | "recent";
 type SavedRoomsState = {
@@ -107,7 +107,7 @@ const PublicLobby = ({ roomsOnly = false }: { roomsOnly?: boolean }) => {
       {status === "error" && <p role="alert">{t("home.loadRoomsError")}</p>}
       {status === "ready" && (visible.length ? <div className={styles.roomGrid}>
         {visible.map((room) => <article key={room.path} className={styles.roomCard}>
-          <a href={room.path} aria-label={t("home.joinAria", { name: room.name })}>
+          <a href={appHref(room.path)} aria-label={t("home.joinAria", { name: room.name })}>
             <div className={styles.cardImage}><img src={artworkFor(room.path)} alt="" loading="lazy" /><span className={styles.cardPlay}><IconPlayerPlay size={18} /></span></div>
             <div className={styles.cardInfo}><h3>{room.name}</h3></div>
             <div className={styles.cardBottom}><span>{t("home.joinRoom")}</span><IconArrowRight size={16} /></div>
@@ -230,7 +230,7 @@ const LegacyHome = () => {
       return;
     }
     setJoinError("");
-    window.location.assign(path);
+    window.location.assign(appHref(path));
   };
   const showRooms = (nextFilter: RoomFilter) => {
     setFilter(nextFilter);
@@ -317,7 +317,7 @@ const LegacyHome = () => {
           </p>
           <div className={styles.featuredBottom}>
             {lastRoom ? (
-              <a className={styles.primaryButton} href={lastRoom.path}>
+              <a className={styles.primaryButton} href={appHref(lastRoom.path)}>
                 <IconPlayerPlay size={17} aria-hidden="true" /> {t("home.returnToRoom")}
               </a>
             ) : (
@@ -459,7 +459,7 @@ const LegacyHome = () => {
           <div className={styles.roomGrid}>
             {visibleRooms.map((room) => (
               <article key={room.path} className={styles.roomCard}>
-                <a href={room.path} aria-label={t("home.openAria", { name: room.name })}>
+                <a href={appHref(room.path)} aria-label={t("home.openAria", { name: room.name })}>
                   <div className={styles.cardImage}>
                     <img src={artworkFor(room.path)} alt="" loading="lazy" />
                     <span className={styles.cardTag}>

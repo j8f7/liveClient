@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Button, Text } from "@mantine/core";
 import { IconHome, IconRefresh } from "@tabler/icons-react";
 import { t } from "../../i18n";
+import { lobbyHref } from "../../config";
 
 export const ErrorModal = ({
   error,
@@ -47,7 +48,7 @@ export const ErrorModal = ({
         <Button
           size="xl"
           onClick={() => {
-            window.location.href = "/";
+            window.location.href = lobbyHref;
           }}
           leftSection={<IconHome />}
         >

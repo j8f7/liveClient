@@ -3,7 +3,7 @@ import "./index.css";
 
 import React, { lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Redirect } from "react-router-dom";
 
 import { App } from "./components/App/App";
 import { Home } from "./components/Home/Home";
@@ -66,8 +66,13 @@ document
   .querySelector('meta[name="description"]')
   ?.setAttribute("content", t("meta.description"));
 
+// Hash routing (VITE_HASH_ROUTER) for hosts that serve the app from a sub-path.
+const Router: React.ComponentType<{ children?: React.ReactNode }> = config.VITE_HASH_ROUTER
+  ? HashRouter
+  : BrowserRouter;
+
 // Redirect old-style URLs
-if (window.location.hash && window.location.pathname === "/") {
+if (!config.VITE_HASH_ROUTER && window.location.hash && window.location.pathname === "/") {
   const hashRoomId = window.location.hash.substring(1);
   window.location.href = "/watch/" + hashRoomId;
 }
@@ -110,7 +115,7 @@ class WatchParty extends React.Component {
       // <React.StrictMode>
       <MantineProvider theme={theme} forceColorScheme="dark">
         <MetadataContext.Provider value={this.state}>
-          <BrowserRouter>
+          <Router>
             <Route
               path="/"
               exact
@@ -176,7 +181,7 @@ class WatchParty extends React.Component {
               </Suspense>
               <Footer />
             </Route>
-          </BrowserRouter>
+          </Router>
         </MetadataContext.Provider>
       </MantineProvider>
       // </React.StrictMode>

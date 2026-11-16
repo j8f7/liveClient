@@ -543,7 +543,7 @@ export class App extends React.Component<AppProps, AppState> {
       }, 3000);
     });
     socket.on("kicked", () => {
-      window.location.assign("/");
+      window.location.assign(lobbyHref);
     });
     socket.on("REC:play", () => {
       this.localPlay();
