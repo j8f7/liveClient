@@ -24,13 +24,36 @@ export type SegmentProgress = (loaded: number, total: number) => void;
  * The CDN link for a segment, from the server's ?link=1 JSON answer. A server
  * without that answer (older release) is used through its redirect instead.
  */
+// Byte-range HLS parts: one CDN link serves every byte range of a part, so a link the
+// server sent with expiresIn (ms it keeps handing it out) is reused until then instead
+// of asking again per segment. Answers without expiresIn (qfile episode segments, where
+// every segment has its own URL) are not kept.
+const linkMemo = new Map<string, { url: string; until: number }>();
+const MEMO_MAX = 64;
+
+function memoGet(segmentUrl: string): string | undefined {
+  const hit = linkMemo.get(segmentUrl);
+  if (hit && Date.now() < hit.until) return hit.url;
+  if (hit) linkMemo.delete(segmentUrl);
+  return undefined;
+}
+
 async function resolveSegmentUrl(segmentUrl: string, signal: AbortSignal): Promise<string> {
+  const cached = memoGet(segmentUrl);
+  if (cached) return cached;
   try {
     const sep = segmentUrl.includes("?") ? "&" : "?";
     const res = await fetch(segmentUrl + sep + "link=1", { cache: "no-store", signal });
     if (res.ok && (res.headers.get("content-type") ?? "").includes("json")) {
       const body = await res.json();
-      if (typeof body?.url === "string" && body.url.startsWith("https://")) return body.url;
+      if (typeof body?.url === "string" && body.url.startsWith("https://")) {
+        const ttl = Number(body.expiresIn);
+        if (ttl > 0) {
+          if (linkMemo.size >= MEMO_MAX) linkMemo.delete(linkMemo.keys().next().value!);
+          linkMemo.set(segmentUrl, { url: body.url, until: Date.now() + ttl });
+        }
+        return body.url;
+      }
     }
     if (res.status === 404) {
       throw Object.assign(new Error("segment not found"), { code: 404 });
@@ -74,8 +97,19 @@ export function makeQfileSegmentLoader(
         headers.set("Range", `bytes=${context.rangeStart}-${context.rangeEnd - 1}`);
       }
       const signal = this.controller.signal;
-      resolveSegmentUrl(context.url, signal)
-        .then((url) => fetch(url, { headers, referrerPolicy: "no-referrer", signal }))
+      const fetchSegment = async () => {
+        const fromMemo = linkMemo.has(context.url);
+        const url = await resolveSegmentUrl(context.url, signal);
+        const response = await fetch(url, { headers, referrerPolicy: "no-referrer", signal });
+        // A remembered link the CDN no longer accepts: forget it and ask the server once.
+        if (fromMemo && [403, 404, 410].includes(response.status)) {
+          linkMemo.delete(context.url);
+          const fresh = await resolveSegmentUrl(context.url, signal);
+          return fetch(fresh, { headers, referrerPolicy: "no-referrer", signal });
+        }
+        return response;
+      };
+      fetchSegment()
         .then(async (response) => {
           this.response = response;
           if (!response.ok || !response.body) {
