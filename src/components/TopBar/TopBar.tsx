@@ -9,7 +9,7 @@ import Announce from "../Announce/Announce";
 import { InviteButton } from "../InviteButton/InviteButton";
 import appStyles from "../App/App.module.css";
 import { MetadataContext } from "../../MetadataContext";
-import config from "../../config";
+import config, { lobbyHref } from "../../config";
 import {
   IconBrandDiscord,
   IconBrandFacebookFilled,
@@ -270,7 +270,7 @@ export const TopBar = (props: {
   const context = useContext(MetadataContext);
   return (
     <header className={`${styles.topbar} ${props.inRoom ? styles.inRoom : ""}`}>
-      <a href="/" className={styles.brand} aria-label={t("brand.home")}>
+      <a href={lobbyHref} className={styles.brand} aria-label={t("brand.home")}>
         <span className={styles.brandMark}>
           <IconPlayerPlayFilled size={19} />
         </span>

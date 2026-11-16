@@ -115,9 +115,12 @@ class WatchParty extends React.Component {
               path="/"
               exact
               render={(props) => {
-                if (config.VITE_DEFAULT_ROOM) {
+                // The default room opens at "/" only on arrival: links back from a room carry
+                // ?lobby (see lobbyHref) so the lobby stays reachable.
+                if (config.VITE_DEFAULT_ROOM && !new URLSearchParams(props.location.search).has("lobby")) {
                   return <Redirect to={`/watch/${config.VITE_DEFAULT_ROOM}`} />;
                 }
+                if (config.VITE_LOBBY_ROOMS_ONLY) return <Home />;
                 return (
                   <React.Fragment>
                     <TopBar hideNewRoom />

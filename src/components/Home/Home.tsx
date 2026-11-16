@@ -40,6 +40,7 @@ import {
   type SavedRoom,
 } from "./roomDirectory";
 import { t, getLang, type MessageKey } from "../../i18n";
+import config from "../../config";
 
 type RoomFilter = "all" | "saved" | "recent";
 type SavedRoomsState = {
@@ -69,10 +70,11 @@ function visitDate(timestamp?: number): string {
 
 export const Home = () => {
   const { features } = useContext(MetadataContext);
+  if (config.VITE_LOBBY_ROOMS_ONLY) return <PublicLobby roomsOnly />;
   return <><GuestIdentityLabel />{features.roomCreation ? <LegacyHome /> : <PublicLobby />}</>;
 };
 
-const PublicLobby = () => {
+const PublicLobby = ({ roomsOnly = false }: { roomsOnly?: boolean }) => {
   const [rooms, setRooms] = useState<SavedRoom[]>([]);
   const [status, setStatus] = useState("loading");
   const [query, setQuery] = useState("");
@@ -87,20 +89,20 @@ const PublicLobby = () => {
     return () => controller.abort();
   }, [refresh]);
   const visible = rooms.filter((room) => room.name.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
-  return <main className={styles.lobby}>
-    <section className={styles.intro}><div>
+  return <main className={`${styles.lobby} ${roomsOnly ? styles.roomsOnly : ""}`}>
+    {!roomsOnly && <section className={styles.intro}><div>
       <div className={styles.eyebrow}>{t("home.tagline")}</div>
       <h1>{t("home.lobby.title")}</h1>
       <p>{t("home.lobby.intro")}</p>
-    </div></section>
-    <section className={styles.discover} aria-labelledby="rooms-title">
-      <div className={styles.sectionHeading}>
+    </div></section>}
+    <section className={styles.discover} aria-label={t("home.available")}>
+      {!roomsOnly && <div className={styles.sectionHeading}>
         <h2 id="rooms-title">{t("home.available")}</h2>
         <label className={styles.searchField}><IconSearch size={17} aria-hidden="true" />
           <input aria-label={t("home.findRoom")} type="search" placeholder={t("home.findRoom")} value={query} onChange={(event) => setQuery(event.target.value)} />
         </label>
         <button className={styles.secondaryButton} onClick={() => setRefresh((value) => value + 1)} disabled={status === "loading"}><IconRefresh size={16} /> {t("home.refresh")}</button>
-      </div>
+      </div>}
       {status === "loading" && <p role="status">{t("home.loadingRooms")}</p>}
       {status === "error" && <p role="alert">{t("home.loadRoomsError")}</p>}
       {status === "ready" && (visible.length ? <div className={styles.roomGrid}>

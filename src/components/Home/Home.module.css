@@ -65,6 +65,15 @@
   font-size: 14px;
 }
 
+/* VITE_LOBBY_ROOMS_ONLY: the lobby is just the room cards, centred on the page. */
+.lobby.roomsOnly {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 48px;
+}
+
 /* The live lobby uses real account rooms and local visits, not the concept's demo directory. */
 .lobby {
   --lobby-bg: #0c1015;

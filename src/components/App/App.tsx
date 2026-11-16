@@ -70,7 +70,7 @@ import { HTML } from "./HTML";
 import { YouTube } from "./YouTube";
 import styles from "./App.module.css";
 import { t, tServer } from "../../i18n";
-import config from "../../config";
+import config, { lobbyHref } from "../../config";
 import { MetadataContext } from "../../MetadataContext";
 import ChatVideoCard from "../ChatVideoCard/ChatVideoCard";
 import {
@@ -2595,7 +2595,7 @@ export class App extends React.Component<AppProps, AppState> {
           className={`${styles.roomMain} ${this.state.fullScreen ? styles.fullscreenRoom : ""}`}
         >
           {SHOW_ROOM_HEADING && <header className={styles.roomHeading}>
-            <a className={styles.backLink} href="/" aria-label={t("app.backToRooms")}>
+            <a className={styles.backLink} href={lobbyHref} aria-label={t("app.backToRooms")}>
               <IconChevronLeft size={18} />
               <span>{t("home.filter.all")}</span>
             </a>
