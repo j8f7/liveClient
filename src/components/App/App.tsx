@@ -120,6 +120,9 @@ const SHOW_TOP_BAR = false;
 // "Now playing" caption under the slime floor; it only repeated the file name
 // (e.g. index.m3u8). Hidden; set true to restore.
 const SHOW_VIDEO_CAPTION = false;
+// 观看选项 button in the room heading (top right; opens the video source tools for
+// rooms with roomControls). Hidden; set true to restore.
+const SHOW_WATCH_OPTIONS = false;
 
 declare global {
   interface Window {
@@ -2620,7 +2623,7 @@ export class App extends React.Component<AppProps, AppState> {
               </p>
             </div>
             <div className={styles.roomActions}>
-              {roomControls && <Button
+              {SHOW_WATCH_OPTIONS && roomControls && <Button
                 variant="subtle"
                 size="compact-sm"
                 leftSection={<IconPlus size={16} />}
