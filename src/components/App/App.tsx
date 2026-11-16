@@ -106,6 +106,7 @@ import type WebTorrent from "webtorrent";
 import type Hls from "hls.js";
 import { type MediaPlayerClass } from "dashjs";
 import { type Torrent } from "webtorrent";
+import { watchDirectVideo, stopWatchingDirectVideo } from "../../utils/directVideo";
 
 // The 成员 button's large member/avatar panel (VideoChat). Off for now: the
 // button still shows the member count but opens nothing. Set true to restore.
@@ -832,6 +833,15 @@ export class App extends React.Component<AppProps, AppState> {
             await this.convertAndPlay(src, time);
           } else {
             await this.Player().setSrcAndTime(src, time);
+          }
+          // Plain video links from netdisk resolvers expire mid-film; reload the
+          // same URL (the resolver redirects to a fresh link) on a media error.
+          if (isDirectVideoUrl(src) && !isQfileStream(src) && leftVideo instanceof HTMLVideoElement) {
+            // Resume where this viewer was; catching up to the room stays
+            // manual (sync button), as for HLS.
+            watchDirectVideo(leftVideo, src, { shouldPlay: () => !this.state.roomPaused });
+          } else {
+            stopWatchingDirectVideo();
           }
           // Start this video
           if (!data.paused) {
