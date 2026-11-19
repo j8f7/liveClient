@@ -70,7 +70,7 @@ import { HTML } from "./HTML";
 import { YouTube } from "./YouTube";
 import styles from "./App.module.css";
 import { t, tServer } from "../../i18n";
-import config, { lobbyHref } from "../../config";
+import config, { appHref, lobbyHref } from "../../config";
 import { MetadataContext } from "../../MetadataContext";
 import ChatVideoCard from "../ChatVideoCard/ChatVideoCard";
 import {
@@ -495,7 +495,7 @@ export class App extends React.Component<AppProps, AppState> {
         warningMessage: "",
       });
       recordRoomVisit({
-        path: window.location.pathname,
+        path: this.getRoomPath(roomId, this.props.vanity),
         name: this.state.roomTitle || this.props.vanity || roomId.slice(1),
       });
       // Use the name in our state, generate one if empty
@@ -1217,26 +1217,27 @@ export class App extends React.Component<AppProps, AppState> {
   };
 
   // Functions for managing room settings
-  getInviteLink = (vanity: string) => {
-    if (vanity) {
-      return `${window.location.origin}/r/${vanity}`;
-    }
-    return `${window.location.origin}/watch${this.state.roomId}`;
-  };
+  getRoomPath = (roomId: string, vanity?: string) =>
+    vanity ? `/r/${vanity}` : `/watch${roomId}`;
 
   handleRoomState = (data: any) => {
+    const roomPath = this.getRoomPath(this.state.roomId, data.vanity);
+    const inviteLink = new URL(appHref(roomPath), window.location.href).href;
     this.setOwner(data.owner);
     this.setVanity(data.vanity);
     this.setPassword(data.password);
-    this.setInviteLink(this.getInviteLink(data.vanity));
+    this.setInviteLink(inviteLink);
     this.setIsChatDisabled(data.isChatDisabled);
     this.setRoomTitle(data.roomTitle);
     this.setRoomDescription(data.roomDescription);
     this.setRoomTitleColor(data.roomTitleColor);
     this.setMediaPath(data.mediaPath);
-    window.history.replaceState("", "", this.getInviteLink(data.vanity));
+    if (inviteLink !== window.location.href) {
+      // Keep the current room mounted while its address changes.
+      window.history.replaceState(window.history.state, "", inviteLink);
+    }
     recordRoomVisit({
-      path: this.getInviteLink(data.vanity),
+      path: roomPath,
       name: data.roomTitle || data.vanity || this.state.roomId.slice(1),
     });
   };

@@ -16,6 +16,7 @@ export function normalizeRoomPath(
   origin = typeof window === "undefined"
     ? "https://watchparty.invalid"
     : window.location.origin,
+  hashPathname?: string,
 ): string | null {
   if (
     typeof input !== "string" ||
@@ -31,7 +32,10 @@ export function normalizeRoomPath(
     const url = new URL(value, origin);
     if (url.origin !== new URL(origin).origin || url.username || url.password)
       return null;
-    const match = url.pathname.match(/^\/(watch|r)\/([^/]+)\/?$/);
+    const path = url.pathname === hashPathname && url.hash.startsWith("#/")
+      ? url.hash.slice(1).split(/[?#]/, 1)[0]
+      : url.pathname;
+    const match = path.match(/^\/(watch|r)\/([^/]+)\/?$/);
     if (!match) return null;
     const id = decodeURIComponent(match[2]);
     if (

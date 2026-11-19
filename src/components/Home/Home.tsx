@@ -223,7 +223,11 @@ const LegacyHome = () => {
   };
   const handleJoin = (event: React.FormEvent) => {
     event.preventDefault();
-    const path = normalizeRoomPath(joinLink);
+    const path = normalizeRoomPath(
+      joinLink,
+      window.location.origin,
+      config.VITE_HASH_ROUTER ? window.location.pathname : undefined,
+    );
     if (!path) {
       setJoinError(t("home.joinInvalid"));
       joinInputRef.current?.focus();
