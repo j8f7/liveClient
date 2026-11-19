@@ -11,7 +11,11 @@ export type SavedRoom = {
   path: string;
   alternatePath: string | null;
   name: string;
+  /** Server-relative lobby picture (/covers/<room>.jpg?v=<n>), when the server has one. */
+  cover?: string;
 };
+
+const COVER_PATH = /^\/covers\/[A-Za-z0-9_-]+\.jpg(\?v=\d+)?$/;
 
 /** Select only safe display fields from the authenticated owner's room response. */
 export function parseSavedRooms(data: unknown): SavedRoom[] {
@@ -22,6 +26,7 @@ export function parseSavedRooms(data: unknown): SavedRoom[] {
       roomId?: unknown;
       vanity?: unknown;
       roomTitle?: unknown;
+      cover?: unknown;
     };
     if (typeof room.roomId !== "string") return [];
     const id = room.roomId.replace(/^\//, "");
@@ -33,7 +38,9 @@ export function parseSavedRooms(data: unknown): SavedRoom[] {
     if (!path) return [];
     const title =
       typeof room.roomTitle === "string" ? room.roomTitle.trim() : "";
-    return [{ path, alternatePath, name: title || vanity || id }];
+    const cover =
+      typeof room.cover === "string" && COVER_PATH.test(room.cover) ? room.cover : undefined;
+    return [{ path, alternatePath, name: title || vanity || id, ...(cover ? { cover } : {}) }];
   });
 }
 

@@ -108,7 +108,7 @@ const PublicLobby = ({ roomsOnly = false }: { roomsOnly?: boolean }) => {
       {status === "ready" && (visible.length ? <div className={styles.roomGrid}>
         {visible.map((room) => <article key={room.path} className={styles.roomCard}>
           <a href={appHref(room.path)} aria-label={t("home.joinAria", { name: room.name })}>
-            <div className={styles.cardImage}><img src={artworkFor(room.path)} alt="" loading="lazy" /><span className={styles.cardPlay}><IconPlayerPlay size={18} /></span></div>
+            <div className={styles.cardImage}><img src={room.cover ? `${serverPath}${room.cover}` : artworkFor(room.path)} alt="" loading="lazy" /><span className={styles.cardPlay}><IconPlayerPlay size={18} /></span></div>
             <div className={styles.cardInfo}><h3>{room.name}</h3></div>
             <div className={styles.cardBottom}><span>{t("home.joinRoom")}</span><IconArrowRight size={16} /></div>
           </a>
