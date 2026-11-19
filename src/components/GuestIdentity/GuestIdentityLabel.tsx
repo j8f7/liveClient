@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { MetadataContext } from "../../MetadataContext";
-import { getGuestIdentity } from "../../utils/guestIdentity";
+import { getGuestIdentity, onGuestIdentity } from "../../utils/guestIdentity";
 import { t } from "../../i18n";
 
 export function GuestIdentityLabel() {
@@ -9,7 +9,9 @@ export function GuestIdentityLabel() {
   useEffect(() => {
     let active = true;
     if (!user) getGuestIdentity().then((identity) => { if (active) setName(identity.name); });
-    return () => { active = false; };
+    // An offline start shows the stand-in name; follow the server's name once it is issued.
+    const unsubscribe = onGuestIdentity((identity) => { if (active) setName(identity.name); });
+    return () => { active = false; unsubscribe(); };
   }, [user]);
   if (user) return null;
   // The provider link sits inside the sentence, so the sentence is split around it.
