@@ -168,6 +168,7 @@ export const en = {
   "controls.toggleFullscreen": "Toggle fullscreen",
   "controls.fullscreen": "Fullscreen",
   "controls.live": "LIVE",
+  "controls.pictureInPicture": "Picture in picture (floating player)",
 
   "guest.aria": "Guest identity",
   "guest.joiningAs": "Joining as",
@@ -243,6 +244,8 @@ export const en = {
   "app.reconnectingShort": "Reconnecting",
   "app.peopleInRoom.one": "{count} person in the room",
   "app.peopleInRoom.other": "{count} people in the room",
+  "app.reloadPlayer": "Reload",
+  "app.reloadPlayerHint": "Playback is stuck: rebuild the player and fetch the room position and video source again",
   "app.connecting": "Connecting",
   "app.watchOptions": "Watch options",
   "app.hideChatPanel": "Hide chat panel",

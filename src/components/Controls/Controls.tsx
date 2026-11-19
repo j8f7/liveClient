@@ -19,6 +19,7 @@ import {
   IconPlayerSkipForwardFilled,
   IconSettings,
   IconMessageCircle,
+  IconPictureInPicture,
 } from "@tabler/icons-react";
 
 interface ControlsProps {
@@ -47,6 +48,8 @@ interface ControlsProps {
   localToggleMute: () => void;
   localSubtitleModal: () => void;
   localSeek: () => void;
+  /** Detached floating player (Picture-in-Picture); hidden where the browser has none */
+  localPictureInPicture?: () => void;
   localSetVolume: (volume: number) => void;
   localSetSubtitleMode: (mode: TextTrackMode, lang?: string) => void;
   roomPlaylistPlay: (index: number) => void;
@@ -277,6 +280,19 @@ export const Controls = (props: ControlsProps) => {
           )}
           <span>{isBehind || !hasSyncReference ? t("controls.sync") : t("controls.inSync")}</span>
         </button>
+        {props.localPictureInPicture && !props.isYouTube &&
+          typeof document !== "undefined" && document.pictureInPictureEnabled && (
+          <button
+            type="button"
+            className={styles.action}
+            aria-label={t("controls.pictureInPicture")}
+            title={t("controls.pictureInPicture")}
+            onClick={props.localPictureInPicture}
+            data-testid="pip-button"
+          >
+            <IconPictureInPicture aria-hidden="true" />
+          </button>
+        )}
         <Popover
           opened={settingsOpened}
           onChange={setSettingsOpened}

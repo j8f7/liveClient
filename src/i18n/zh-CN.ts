@@ -172,6 +172,7 @@ export const zhCN: Messages = {
   "controls.toggleFullscreen": "切换全屏",
   "controls.fullscreen": "全屏",
   "controls.live": "直播",
+  "controls.pictureInPicture": "画中画（小窗播放）",
 
   "guest.aria": "访客身份",
   "guest.joiningAs": "以访客身份加入：",
@@ -247,6 +248,8 @@ export const zhCN: Messages = {
   "app.reconnectingShort": "正在重新连接",
   "app.peopleInRoom.one": "直播中有 {count} 人",
   "app.peopleInRoom.other": "直播中有 {count} 人",
+  "app.reloadPlayer": "重新加载",
+  "app.reloadPlayerHint": "播放卡住了：重建播放器，并重新获取直播进度和视频源",
   "app.connecting": "正在连接",
   "app.watchOptions": "观看选项",
   "app.hideChatPanel": "隐藏聊天面板",

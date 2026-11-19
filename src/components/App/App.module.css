@@ -87,6 +87,25 @@
   border-radius: 50%;
   margin-right: 6px;
 }
+.reloadPlayer {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid #eaa580;
+  border-radius: 999px;
+  background: transparent;
+  color: #eaa580;
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.reloadPlayer:hover {
+  background: rgba(234, 165, 128, 0.15);
+}
 .roomActions {
   display: flex;
   align-items: center;

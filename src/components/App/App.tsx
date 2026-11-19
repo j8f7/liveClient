@@ -100,6 +100,7 @@ import {
   IconMovie,
   IconMessageOff,
   IconPlus,
+  IconReload,
 } from "@tabler/icons-react";
 import { InviteButton } from "../InviteButton/InviteButton";
 import type WebTorrent from "webtorrent";
@@ -107,6 +108,7 @@ import type Hls from "hls.js";
 import { type MediaPlayerClass } from "dashjs";
 import { type Torrent } from "webtorrent";
 import { watchDirectVideo, stopWatchingDirectVideo } from "../../utils/directVideo";
+import { noteMediaActivity, watchStalls } from "../../utils/stallWatch";
 
 // The 成员 button's large member/avatar panel (VideoChat). Off for now: the
 // button still shows the member count but opens nothing. Set true to restore.
@@ -188,6 +190,8 @@ interface AppState {
   isAutoPlayable: boolean;
   // The browser refused to start the video even muted (e.g. iOS Low Power Mode): a tap is needed.
   playBlocked: boolean;
+  /** Should be playing, but no playhead move and no media bytes for 5 s: show 重新加载 */
+  stalled: boolean;
   /** The YouTube player (iframe + API script) is loaded only once YouTube media plays. */
   youtubeRequested: boolean;
   downloaded: number;
@@ -276,6 +280,7 @@ export class App extends React.Component<AppProps, AppState> {
     isVBrowser: false,
     isAutoPlayable: true,
     playBlocked: false,
+    stalled: false,
     youtubeRequested: false,
     downloaded: 0,
     total: 0,
@@ -381,6 +386,20 @@ export class App extends React.Component<AppProps, AppState> {
         media: this.state.roomMedia,
         estimateBitsPerSec: window.watchparty.hls?.bandwidthEstimate,
       }));
+      this.stopStallWatch = watchStalls(
+        video,
+        () =>
+          Boolean(this.state.roomMedia) &&
+          !this.state.roomPaused &&
+          !this.state.playBlocked &&
+          this.state.isAutoPlayable &&
+          this.usingNative() &&
+          !this.playingScreenShare() &&
+          !this.playingFileShare() &&
+          !this.playingVBrowser() &&
+          !document.hidden,
+        (stalled) => this.setState({ stalled }),
+      );
     }
     this.init();
     if (firebaseEnabled) {
@@ -394,6 +413,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   componentWillUnmount() {
+    this.stopStallWatch?.();
     document.removeEventListener("fullscreenchange", this.onFullScreenChange);
     document.removeEventListener("keydown", this.onKeydown);
     window.clearInterval(this.heartbeat);
@@ -790,6 +810,7 @@ export class App extends React.Component<AppProps, AppState> {
                         LoadStats,
                         (loaded: number, total: number) => {
                           noteSegmentBytes(loaded);
+                          noteMediaActivity();
                           this.onSegmentProgress(loaded, total);
                         },
                       ) as any,
@@ -1970,6 +1991,44 @@ export class App extends React.Component<AppProps, AppState> {
     }
   }
 
+  private stopStallWatch?: () => void;
+  // 重新加载: tear the player down (hls.js, dash.js, a conversion, the <video> source) and
+  // ask the server for the room state again (CMD:askHost); the REC:host that answers
+  // builds a fresh player, fetches the source again and seeks to the room's position.
+  reloadPlayer = () => {
+    console.log("[stall] reload: player torn down, asking the server for the room state");
+    this.setState({ stalled: false });
+    stopWatchingDirectVideo();
+    this.stopConvert();
+    window.watchparty.hls?.destroy();
+    window.watchparty.hls = undefined;
+    try {
+      window.watchparty.dash?.reset();
+    } catch (e: any) {
+      console.warn("[stall] dash reset failed", e?.message ?? e);
+    }
+    window.watchparty.dash = undefined;
+    const video = this.HTMLInterface.getVideoEl();
+    if (video) {
+      video.pause();
+      video.srcObject = null;
+      video.removeAttribute("src");
+      video.load();
+    }
+    this.socket?.emit("CMD:askHost");
+  };
+
+  // 画中画: the video in a floating window of its own (Picture-in-Picture), toggled.
+  togglePictureInPicture = async () => {
+    const video = this.HTMLInterface.getVideoEl();
+    try {
+      if (document.pictureInPictureElement) await document.exitPictureInPicture();
+      else if (video instanceof HTMLVideoElement) await video.requestPictureInPicture();
+    } catch (e: any) {
+      console.warn("[pip] refused:", e?.name, e?.message ?? e);
+    }
+  };
+
   usingNative = () => {
     // Anything that uses HTML Video (e.g. not YouTube, Vimeo, or other embedded JS player)
     return !this.usingYoutube();
@@ -2464,6 +2523,7 @@ export class App extends React.Component<AppProps, AppState> {
         localSubtitleModal={this.localSubtitleModal}
         localSetVolume={this.localSetVolume}
         localSeek={this.localSeek}
+        localPictureInPicture={this.togglePictureInPicture}
         localSetSubtitleMode={this.Player().setSubtitleMode}
         roomPlaylistPlay={this.roomPlaylistPlay}
         playlist={this.state.playlist}
@@ -2624,6 +2684,18 @@ export class App extends React.Component<AppProps, AppState> {
                     : t("app.connecting")}
                 {this.state.roomDescription &&
                   ` · ${this.state.roomDescription}`}
+                {this.state.stalled && (
+                  <button
+                    type="button"
+                    className={styles.reloadPlayer}
+                    onClick={this.reloadPlayer}
+                    title={t("app.reloadPlayerHint")}
+                    data-testid="reload-player"
+                  >
+                    <IconReload size={14} aria-hidden="true" />
+                    {t("app.reloadPlayer")}
+                  </button>
+                )}
               </p>
             </div>
             <div className={styles.roomActions}>
